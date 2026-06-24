@@ -4,7 +4,7 @@ import Receipt from '../components/Receipt'
 import './Welcome.css'
 
 // How far the receipt travels (its own height). Kept in sync with --receipt-h.
-const TRAVEL = 330
+const TRAVEL = 410
 
 // Paper feeds out in eased pushes with a brief dwell between each — reads as a
 // printer advancing line by line, not one slide. Each push is decelerated
@@ -12,7 +12,7 @@ const TRAVEL = 330
 const FEED = [0.4, 0, 0.2, 1]
 const SETTLE = [0.22, 1, 0.36, 1]
 const PRINT = {
-  y: [TRAVEL, 264, 264, 198, 198, 132, 132, 66, 66, 0],
+  y: [TRAVEL, 328, 328, 246, 246, 164, 164, 82, 82, 0],
   times: [0, 0.14, 0.2, 0.34, 0.4, 0.54, 0.6, 0.74, 0.8, 1],
   ease: [FEED, 'linear', FEED, 'linear', FEED, 'linear', FEED, 'linear', SETTLE],
 }

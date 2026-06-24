@@ -5,7 +5,7 @@
   flex-direction: column;
   padding: 40px 32px calc(40px + env(safe-area-inset-bottom));
   background: var(--orange);
-  --receipt-h: 330px; /* the white card */
+  --receipt-h: 410px; /* white card; taller than Figma's 367 to fit the === rows + bigger logo without clipping the barcode */
 }
 
 /* The middle flexes; the receipt is centered in it */
@@ -81,9 +81,12 @@
 .receipt__body {
   flex: 1 1 auto;
   background: var(--paper);
-  padding: 46px 18px 0;
+  padding: 48px 15px 0; /* Data block: mt 48, 15px side gutters (Figma) */
   display: flex;
   flex-direction: column;
+  align-items: center;
+  gap: 12px; /* group spacing inside the first cluster */
+  font-family: 'Space Grotesk', var(--font-sans);
 }
 
 .receipt__head {
@@ -96,6 +99,7 @@
 .receipt__chip {
   background: var(--ink-deep);
   color: var(--paper-soft);
+  font-family: var(--font-sans);
   font-size: 10px;
   font-weight: 700;
   line-height: 1.3;
@@ -103,14 +107,74 @@
   border-radius: 999px;
 }
 
-.receipt__perf {
-  margin-top: 28px;
-  height: 0;
-  border-top: 1.5px dashed rgba(14, 13, 7, 0.22);
+/* Address block sits 16px under the head */
+.receipt__addr {
+  margin-top: 4px; /* head gap is 12; +4 = 16 (Figma) */
+  text-align: center;
+  color: var(--ink);
+  font-size: 10px;
+  font-weight: 450;
+  line-height: 18px;
 }
 
-.receipt__tail {
-  flex: 1 1 auto;
+.receipt__addr p {
+  margin: 0;
+}
+
+.receipt__perf {
+  width: 100%;
+  overflow: hidden;
+  color: var(--ink);
+  font-size: 10px;
+  font-weight: 450;
+  line-height: 18px;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.receipt__rows {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  color: var(--ink);
+  font-size: 10px;
+  font-weight: 450;
+  line-height: 18px;
+}
+
+.receipt__row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.receipt__row span:last-child {
+  text-align: right;
+}
+
+/* Footer (message + barcode) sits 40px below the last perf line */
+.receipt__footer {
+  margin-top: 28px; /* +12 group gap = 40 (Figma) */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.receipt__msg {
+  margin: 0;
+  color: var(--ink);
+  font-size: 10px;
+  font-weight: 450;
+  line-height: 18px;
+  white-space: nowrap;
+}
+
+.receipt__barcode {
+  display: block;
+  width: 145px;
+  height: 27px;
 }
 
 /* ---------- Role buttons ---------- */
