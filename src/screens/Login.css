@@ -1,0 +1,249 @@
+.login {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 40px 32px calc(40px + env(safe-area-inset-bottom));
+  background: var(--cream);
+}
+
+/* Middle flexes and centres; headline → entry gap matches Figma (80) */
+.login__main {
+  flex: 1 1 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 80px;
+}
+
+.login__headline {
+  margin: 0;
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -0.01em;
+  text-align: center;
+  color: var(--ink);
+}
+
+/* ---------- Code entry ---------- */
+.login__entry {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Sized to the pill only (the pen is absolute). A transform on this slides the
+   pill to centre when the pen leaves, with no reflow. */
+.login__shift {
+  display: inline-flex;
+  align-items: center;
+  will-change: transform;
+}
+
+.pill {
+  position: relative; /* anchors the absolutely-positioned pen */
+  display: inline-flex;
+  align-items: center;
+  gap: 24px;
+  padding: 10px 20px;
+  border-radius: 999px;
+  background: var(--code-tint);
+  cursor: text;
+  transition: background-color 200ms var(--ease-out);
+}
+
+/* Wrong code: red wash + red text, reverts on edit / after the hold. */
+.pill--error {
+  background: rgba(196, 69, 47, 0.12);
+}
+.pill--error .field__chars {
+  color: #c4452f;
+}
+.pill--error .caret {
+  background: #c4452f;
+}
+
+/* The visible code is a row of per-character spans (animated individually);
+   a transparent <input> overlays it to capture the keyboard. The display
+   layer drives the pill's width naturally. */
+.field {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.field__chars {
+  display: inline-block;
+  white-space: nowrap;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 28px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: rgba(14, 13, 7, 0.65);
+  /* offset the trailing letter-spacing so the string reads optically centred */
+  padding-left: 0.24em;
+}
+
+.char {
+  display: inline-block;
+  will-change: transform, opacity, filter;
+}
+
+.char--placeholder {
+  color: var(--ink);
+  opacity: 0.4;
+}
+
+.pill--ok .field__chars {
+  color: var(--ink);
+}
+
+/* Blinking caret — trailing after the last char, or leading before the
+   placeholder when the field is focused but empty. */
+.caret {
+  display: inline-block;
+  width: 2px;
+  height: 24px;
+  margin-left: -0.12em;
+  border-radius: 2px;
+  background: var(--orange);
+  vertical-align: -4px;
+  animation: caret-blink 1.05s steps(1, end) infinite;
+}
+
+.caret--lead {
+  margin-left: 0;
+  margin-right: 0.12em;
+}
+
+@keyframes caret-blink {
+  0%,
+  55% {
+    opacity: 1;
+  }
+  56%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.field__input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  /* invisible but focusable — 16px keeps iOS from zooming on focus */
+  font-size: 16px;
+  color: transparent;
+  caret-color: transparent;
+  opacity: 0;
+}
+
+.pill__clear {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--ink);
+  opacity: 0.55;
+}
+
+/* Persistent action button (pen ↔ submit). Anchored just off the pill's right
+   edge — absolute so it never reflows the pill. Vertically centred via top
+   offset (no transform) so Framer owns scale. */
+.code-action {
+  position: absolute;
+  left: 100%;
+  top: calc(50% - 24px);
+  margin-left: 8px;
+  width: 48px;
+  height: 48px;
+  border-radius: 999px;
+  background: var(--orange);
+  color: #ffffff;
+  display: grid;
+  place-items: center;
+  transition: transform 130ms var(--ease-out);
+}
+
+.code-action:active {
+  transform: scale(0.94);
+}
+
+/* Both icons share the same cell so they cross-fade in place */
+.code-action__icon {
+  grid-area: 1 / 1;
+  display: flex;
+}
+
+/* ---------- Foot status ---------- */
+.login__foot {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  padding: 20px 40px;
+  border-radius: 43px;
+  font-size: 18px;
+  font-weight: 700;
+  background: var(--orange-tint);
+  color: var(--orange);
+  transition: background-color 360ms var(--ease-out), color 360ms var(--ease-out);
+  will-change: transform;
+}
+
+.status__inner {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status--ok {
+  background: var(--green);
+  color: var(--green-ink);
+}
+
+/* Wrap reserves the line so the swap (helper ↔ error) never shifts layout. */
+.login__helper {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 17px;
+  width: 308px;
+}
+
+.login__helper-text {
+  grid-area: 1 / 1;
+  margin: 0;
+  max-width: 308px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.2;
+  text-align: center;
+  color: var(--muted);
+}
+
+.login__helper-text--error {
+  color: #c4452f;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .caret {
+    animation: none;
+  }
+}

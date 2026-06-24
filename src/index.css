@@ -1,0 +1,129 @@
+/* ---------- SF Pro Rounded (local, Latin subset → woff2) ---------- */
+@font-face {
+  font-family: 'SF Pro Rounded';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('./fonts/sf/SFProRounded-Regular.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'SF Pro Rounded';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('./fonts/sf/SFProRounded-Medium.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'SF Pro Rounded';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('./fonts/sf/SFProRounded-Semibold.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'SF Pro Rounded';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('./fonts/sf/SFProRounded-Bold.woff2') format('woff2');
+}
+
+:root {
+  /* Brand palette (Figma) */
+  --orange: #ff5c0a;
+  --orange-deep: #a1250b; /* the printer slot / hole */
+  --orange-tint: rgba(255, 92, 10, 0.1); /* "Acesso bloqueado" pill */
+  --cream: #e9e8e2; /* login background */
+  --ink: #0e0d07; /* headline / dark text */
+  --ink-pill: #141210; /* "Admin" button */
+  --ink-deep: #201f13; /* APP chip on the receipt */
+  --paper: #ffffff; /* the receipt / Amigo button */
+  --paper-soft: #fafbf8;
+  --muted: #817f63; /* helper copy */
+  --green: #27724c; /* "Acesso liberado" */
+  --green-ink: #fffbf4;
+  --code-tint: rgba(14, 13, 7, 0.1); /* CODE pill background */
+
+  /* Aliases kept so shared bits (.app, etc.) stay readable */
+  --bg: var(--cream);
+  --line-soft: rgba(14, 13, 7, 0.05);
+
+  /* Soft, layered depth (shadows over borders) */
+  --btn-shadow: 0 2px 10px rgba(14, 13, 7, 0.14), 0 1px 2px rgba(14, 13, 7, 0.1);
+  --receipt-shadow: 0 18px 40px rgba(80, 24, 4, 0.28), 0 2px 6px rgba(80, 24, 4, 0.18);
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+
+  /* SF Pro Rounded (local subset), system fallbacks while it loads */
+  --font-sans: "SF Pro Rounded", ui-rounded, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", system-ui, Roboto, Helvetica, Arial, sans-serif;
+
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+/* Default to the first screen's colour (splash = orange); App.jsx keeps both
+   <html> and <body> in sync with the active screen so iOS safe areas stay
+   solid. Painting it on <html> too fills behind the status bar / toolbar. */
+html {
+  background: #ff5c0a;
+}
+
+body {
+  margin: 0;
+  background: #ff5c0a;
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+button {
+  font-family: inherit;
+  color: inherit;
+  border: none;
+  background: none;
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* The framed mobile column */
+#root {
+  display: flex;
+  justify-content: center;
+}
+
+/* Fills the viewport vertically on every phone (dvh tracks the dynamic
+   browser chrome; vh is the fallback). No page scroll — screens lay out
+   inside this height with fl: the middle flexes, the bottom stays pinned. */
+.app {
+  position: relative;
+  width: 100%;
+  max-width: 440px;
+  height: 100vh;
+  height: 100dvh;
+  background: var(--bg);
+  border-left: 1px solid var(--line-soft);
+  border-right: 1px solid var(--line-soft);
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    scroll-behavior: auto !important;
+  }
+}
