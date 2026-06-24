@@ -73,7 +73,7 @@ body,
   height: 100%;
 }
 
-/* Default to the first screen's colour (splash = orange); App.jsx keeps both
+/* Default to the first screen's colour (welcome = orange); App.jsx keeps both
    <html> and <body> in sync with the active screen so iOS safe areas stay
    solid. Painting it on <html> too fills behind the status bar / toolbar. */
 html {
