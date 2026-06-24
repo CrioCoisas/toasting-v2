@@ -7,6 +7,28 @@
   background: var(--cream);
 }
 
+/* Return button row, top-left (Figma 138:1045) */
+.login__back {
+  flex-shrink: 0;
+  display: flex;
+  width: 100%;
+}
+
+.back-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 999px;
+  background: var(--ink-pill);
+  color: #ffffff;
+  display: grid;
+  place-items: center;
+  transition: transform 130ms var(--ease-out);
+}
+
+.back-btn:active {
+  transform: scale(0.94);
+}
+
 /* Middle flexes and centres; headline → entry gap matches Figma (80) */
 .login__main {
   flex: 1 1 0;

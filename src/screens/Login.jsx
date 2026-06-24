@@ -6,7 +6,7 @@ import {
   useReducedMotion,
 } from 'framer-motion'
 import { MAX_CODE_LENGTH, sanitize, validateCode } from '../data/codes'
-import { ArrowIcon, CheckIcon, CloseIcon, PenIcon, UnlockIcon } from '../components/icons'
+import { ArrowIcon, BackIcon, CheckIcon, CloseIcon, PenIcon, UnlockIcon } from '../components/icons'
 import './Login.css'
 
 function haptic(pattern) {
@@ -30,7 +30,7 @@ const SHAKE = {
   },
 }
 
-export default function Login({ onAuthenticated }) {
+export default function Login({ onAuthenticated, onBack }) {
   const reduce = useReducedMotion()
   const inputRef = useRef(null)
   const shake = useAnimationControls()
@@ -139,6 +139,12 @@ export default function Login({ onAuthenticated }) {
       animate="show"
       exit={{ opacity: 0, transition: { duration: 0.25 } }}
     >
+      <motion.div className="login__back" variants={enter}>
+        <button type="button" className="back-btn" aria-label="Voltar" onClick={onBack}>
+          <BackIcon size={24} />
+        </button>
+      </motion.div>
+
       <div className="login__main">
         <motion.h1 className="login__headline" variants={enter}>
           Para amigos que
