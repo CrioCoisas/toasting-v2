@@ -1,8 +1,11 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { AnimatePresence } from 'framer-motion'
 import { Routes, Route, useLocation, useNavigate } from 'react-router-dom'
 import Welcome from './screens/Welcome'
 import Login from './screens/Login'
+import Onboard from './screens/Onboard'
+
+const isEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim())
 
 // Each screen's solid background, keyed by route. Painting it on <html> fills
 // the iOS safe areas (behind the status bar / toolbar) with the screen colour,
@@ -10,6 +13,8 @@ import Login from './screens/Login'
 const SCREEN_BG = {
   '/': '#ff5c0a',
   '/login': '#e9e8e2',
+  '/name': '#e9e8e2',
+  '/email': '#e9e8e2',
 }
 
 export default function App() {
@@ -23,9 +28,14 @@ export default function App() {
     document.querySelector('meta[name="theme-color"]')?.setAttribute('content', color)
   }, [location.pathname])
 
+  // Onboarding profile, collected across /name → /email. Controlled here so a
+  // value survives the back button.
+  const [profile, setProfile] = useState({ member: null, name: '', email: '' })
+  const set = (patch) => setProfile((p) => ({ ...p, ...patch }))
+
   const handleAuthenticated = (member) => {
-    // Next screens (venue list) come later — for now confirm the match.
-    console.log('Acesso liberado:', member)
+    set({ member })
+    navigate('/name')
   }
 
   return (
@@ -46,6 +56,62 @@ export default function App() {
           <Route
             path="/login"
             element={<Login onAuthenticated={handleAuthenticated} onBack={() => navigate('/')} />}
+          />
+          <Route
+            path="/name"
+            element={
+              <Onboard
+                label="Seu nome"
+                step={1}
+                steps={2}
+                eyebrow="Quase lá,"
+                title="Como você se chama?"
+                placeholder="NOME"
+                value={profile.name}
+                onChange={(name) => set({ name })}
+                autoComplete="name"
+                autoCapitalize="words"
+                enterKeyHint="next"
+                onContinue={(name) => {
+                  set({ name })
+                  navigate('/email')
+                }}
+                onBack={() => navigate('/login')}
+              />
+            }
+          />
+          <Route
+            path="/email"
+            element={
+              <Onboard
+                label="Seu email"
+                step={2}
+                steps={2}
+                eyebrow="Só mais um detalhe,"
+                title={
+                  <>
+                    Qual o seu
+                    <br />
+                    email?
+                  </>
+                }
+                placeholder="nome@gmail.com"
+                value={profile.email}
+                onChange={(email) => set({ email })}
+                type="email"
+                inputMode="email"
+                autoComplete="email"
+                autoCapitalize="none"
+                enterKeyHint="go"
+                isValid={isEmail}
+                onContinue={(email) => {
+                  set({ email })
+                  // Next step (venue list) comes later — log the captured profile.
+                  console.log('Cadastro:', { ...profile, email })
+                }}
+                onBack={() => navigate('/name')}
+              />
+            }
           />
         </Routes>
       </AnimatePresence>

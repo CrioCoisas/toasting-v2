@@ -1,0 +1,183 @@
+.onboard {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 40px 32px calc(40px + env(safe-area-inset-bottom));
+  background: var(--cream);
+}
+
+/* Headline at top, input in the middle, actions pinned to the bottom — the
+   three blocks spread across the available height (Figma 173:18 justify-between). */
+.onboard__inner {
+  flex: 1 1 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Step indicator + headline travel together as the top block (Figma 40 gap). */
+.onboard__top {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+}
+
+/* Progress dots: active step is a 24px bar, the rest are 4px dots at 40%. */
+.onboard__steps {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.onboard__step {
+  width: 4px;
+  height: 4px;
+  border-radius: 25px;
+  background: var(--ink);
+  opacity: 0.4;
+  transition: width 0.35s var(--ease-out), opacity 0.35s var(--ease-out);
+}
+
+.onboard__step.is-active {
+  width: 24px;
+  opacity: 1;
+}
+
+.onboard__head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+}
+
+.onboard__eyebrow {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--muted);
+}
+
+.onboard__title {
+  margin: 0;
+  max-width: 240px;
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  /* break a worst-case unbroken token instead of pushing past the screen */
+  overflow-wrap: anywhere;
+}
+
+/* ---------- Self-sizing pill input ---------- */
+.onboard__entry {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.onboard__pill {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 100%;
+  padding: 10px 20px;
+  border-radius: 999px;
+  background: var(--code-tint);
+  cursor: text;
+}
+
+.onboard__input {
+  width: 0; /* overridden inline from the measured mirror width */
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  font-family: inherit;
+  font-size: 24px; /* >=16px so iOS doesn't zoom on focus */
+  font-weight: 700;
+  line-height: 28px;
+  text-align: center;
+  color: var(--ink);
+  caret-color: var(--orange); /* blinking orange caret while typing */
+  /* Focused, it scrolls to the caret (latest chars in view); blurred, it
+     ellipsises from the start so a long value reads from its beginning. */
+  text-overflow: ellipsis;
+}
+
+.onboard__input::placeholder {
+  color: var(--ink);
+  opacity: 0.4;
+}
+
+/* Out-of-flow twin of the value: same metrics, measured (not shown) to drive
+   the pill width so it hugs content and caps at the row. */
+.onboard__sizer {
+  position: absolute;
+  left: 0;
+  top: 0;
+  visibility: hidden;
+  pointer-events: none;
+  white-space: pre;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 28px;
+}
+
+/* ---------- Bottom actions ---------- */
+.onboard__actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.onboard__back {
+  flex-shrink: 0;
+  width: 62px;
+  height: 62px;
+  border-radius: 999px;
+  background: var(--paper);
+  color: var(--ink);
+  display: grid;
+  place-items: center;
+  box-shadow: var(--btn-shadow);
+  transition: transform 130ms var(--ease-out);
+}
+
+.onboard__back:active {
+  transform: scale(0.94);
+}
+
+.onboard__continue {
+  flex: 1 1 0;
+  height: 62px;
+  border-radius: 43px;
+  background: var(--ink-pill);
+  color: #fffbf4;
+  font-size: 18px;
+  font-weight: 700;
+  box-shadow: var(--btn-shadow);
+  transition: transform 130ms var(--ease-out), opacity 200ms var(--ease-out);
+}
+
+.onboard__continue:active {
+  transform: scale(0.98);
+}
+
+/* Until the field is valid the CTA reads as not-yet-available. */
+.onboard__continue.is-disabled {
+  opacity: 0.4;
+  pointer-events: none;
+  box-shadow: none;
+}
