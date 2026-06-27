@@ -4,6 +4,7 @@ import { Routes, Route, useLocation, useNavigate } from 'react-router-dom'
 import Welcome from './screens/Welcome'
 import Login from './screens/Login'
 import Onboard from './screens/Onboard'
+import Home from './screens/Home'
 
 const isEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim())
 
@@ -15,6 +16,7 @@ const SCREEN_BG = {
   '/login': '#e9e8e2',
   '/name': '#e9e8e2',
   '/email': '#e9e8e2',
+  '/home': '#e9e8e2',
 }
 
 export default function App() {
@@ -106,13 +108,13 @@ export default function App() {
                 isValid={isEmail}
                 onContinue={(email) => {
                   set({ email })
-                  // Next step (venue list) comes later — log the captured profile.
-                  console.log('Cadastro:', { ...profile, email })
+                  navigate('/home')
                 }}
                 onBack={() => navigate('/name')}
               />
             }
           />
+          <Route path="/home" element={<Home />} />
         </Routes>
       </AnimatePresence>
     </div>
