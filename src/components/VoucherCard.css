@@ -42,6 +42,11 @@
   background: currentColor;
   -webkit-mask: var(--logo) left center / auto 100% no-repeat;
   mask: var(--logo) left center / auto 100% no-repeat;
+  /* Pin the masked layer to its own GPU surface so the carousel's per-frame 3D
+     transforms don't re-rasterize the mask (which blinks the PNG each swipe). */
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 .vcard__field {

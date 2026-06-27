@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { useNavigate, useParams } from 'react-router-dom'
-import { BackIcon, ClockIcon } from '../components/icons'
+import { useParams } from 'react-router-dom'
+import { ClockIcon } from '../components/icons'
 import { VENUES } from '../data/venues'
 import { pageFade } from '../motion'
 import qrSrc from '../assets/qr.svg'
@@ -14,7 +14,6 @@ function haptic(p) {
 }
 
 export default function QrCode() {
-  const navigate = useNavigate()
   const { id } = useParams()
   const venue = VENUES.find((v) => v.id === id) ?? VENUES[0]
 
@@ -40,10 +39,6 @@ export default function QrCode() {
 
   return (
     <motion.main className="voucher" {...pageFade}>
-      <button type="button" className="voucher__back" onClick={() => navigate(`/voucher/${venue.id}`)} aria-label="Voltar">
-        <BackIcon size={24} />
-      </button>
-
       <div className="voucher__body">
         <div className="qr">
           <div className="qr__head">
@@ -93,9 +88,7 @@ export default function QrCode() {
         </div>
 
         <p className="voucher__hint voucher__hint--tight">
-          Mostre pro garçom antes de
-          <br />
-          fechar a conta
+          Mostre pro garçom antes de fechar a conta
         </p>
       </div>
     </motion.main>

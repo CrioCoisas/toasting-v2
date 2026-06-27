@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { motion, useSpring, useReducedMotion } from 'framer-motion'
 import { useNavigate, useParams } from 'react-router-dom'
-import { BackIcon, QrIcon } from '../components/icons'
+import { QrIcon } from '../components/icons'
 import VoucherCard from '../components/VoucherCard'
 import { VENUES } from '../data/venues'
 import { pageFade } from '../motion'
@@ -41,10 +41,6 @@ export default function VoucherDetail() {
 
   return (
     <motion.main className="voucher" {...pageFade} onPointerDown={askMotion}>
-      <button type="button" className="voucher__back" onClick={() => navigate('/home')} aria-label="Voltar">
-        <BackIcon size={24} />
-      </button>
-
       <div className="voucher__body">
         <div className="voucher__ticket">
           <motion.div
