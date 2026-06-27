@@ -18,7 +18,7 @@ const mod = (n) => ((n % N) + N) % N
 // sits at |delta|≈N/2, far outside the visible window (|delta|<=2), so it never
 // shows. The centre card is flat and big; neighbours rotate away on Y, shrink,
 // recede in Z and dim — the horizontal recreation of the reference stack.
-const SPACING = 188 // px between adjacent card centres
+const SPACING = 210 // px between adjacent card centres (more air around the centre card)
 const ANGLE = 42 // deg of Y-rotation for a one-step neighbour
 const SCALE_DROP = 0.18 // how much smaller each step out is
 const DEPTH = -90 // translateZ per step (needs perspective on the stage)
@@ -34,10 +34,8 @@ const scaleOf = (d) => 1 - Math.min(Math.abs(d), 2) * SCALE_DROP
 const zOf = (d) => Math.min(Math.abs(d), 2) * DEPTH
 const opacityOf = (d) => clamp(1.7 - Math.abs(d) * 0.7, 0, 1)
 const zIndexOf = (d) => Math.round(50 - Math.abs(d) * 10)
-// Exact Figma card shadow (two soft layers of --ink @ 8%); static so it stays
-// clean instead of smearing with the 3D rotation. Off-centre cards dim a hair.
-const SHADOW = 'drop-shadow(0 2px 8px rgba(14,13,7,0.08)) drop-shadow(0 1px 2px rgba(14,13,7,0.08))'
-const filterOf = (d) => `brightness(${1 - Math.min(Math.abs(d), 1) * 0.06}) ${SHADOW}`
+// The card shadow is a static CSS filter (see .home__card) — animating a
+// drop-shadow per frame tanks Safari. Depth now comes from scale + opacity only.
 
 function VoucherCard({ venue }) {
   return (
@@ -90,9 +88,8 @@ function CoverflowCard({ venue, index, pos, fit }) {
   const scale = useTransform(pos, (p) => scaleOf(d(p)) * fit)
   const opacity = useTransform(pos, (p) => opacityOf(d(p)))
   const zIndex = useTransform(pos, (p) => zIndexOf(d(p)))
-  const filter = useTransform(pos, (p) => filterOf(d(p)))
   return (
-    <motion.div className="home__card" style={{ x, z, rotateY, scale, opacity, zIndex, filter }}>
+    <motion.div className="home__card" style={{ x, z, rotateY, scale, opacity, zIndex }}>
       <VoucherCard venue={venue} />
     </motion.div>
   )
@@ -113,7 +110,9 @@ export default function Home() {
     const el = carouselRef.current
     if (!el) return
     const ro = new ResizeObserver(() => {
-      setFit(clamp((el.clientHeight - 24) / 400, 0.55, 1))
+      // Leave generous vertical air and never fill the whole height, so the
+      // card breathes between the header and the dots.
+      setFit(clamp((el.clientHeight - 48) / 400, 0.55, 0.9))
     })
     ro.observe(el)
     return () => ro.disconnect()

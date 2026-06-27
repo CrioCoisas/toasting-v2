@@ -70,7 +70,11 @@
   height: 400px;
   margin: -200px 0 0 -130px;
   transform-style: preserve-3d;
-  will-change: transform, opacity, filter;
+  backface-visibility: hidden;
+  will-change: transform, opacity;
+  /* Static Figma shadow (two soft --ink layers @ 8%). Kept off the per-frame
+     style so Safari isn't recomputing a drop-shadow every frame. */
+  filter: drop-shadow(0 2px 8px rgba(14, 13, 7, 0.08)) drop-shadow(0 1px 2px rgba(14, 13, 7, 0.08));
 }
 
 /* ---------- Voucher (ticket) card ---------- */
