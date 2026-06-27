@@ -1,7 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { AnimatePresence, motion, animate, useMotionValue, useTransform, useReducedMotion } from 'framer-motion'
 import { QrIcon } from '../components/icons'
+import VoucherCard from '../components/VoucherCard'
 import { VENUES } from '../data/venues'
+import { pageFade } from '../motion'
 import './Home.css'
 
 function haptic(pattern) {
@@ -37,47 +40,6 @@ const zIndexOf = (d) => Math.round(50 - Math.abs(d) * 10)
 // The card shadow is a static CSS filter (see .home__card) — animating a
 // drop-shadow per frame tanks Safari. Depth now comes from scale + opacity only.
 
-function VoucherCard({ venue }) {
-  return (
-    <div className="vcard" style={{ backgroundColor: venue.bg, color: venue.ink }}>
-      <div className="vcard__top">
-        <span
-          className="vcard__logo"
-          style={{ '--logo': `url(${venue.logo})` }}
-          role="img"
-          aria-label={venue.name}
-        />
-        <div className="vcard__field">
-          <span className="vcard__label">{venue.label}</span>
-          <span className="vcard__name">{venue.name}</span>
-        </div>
-      </div>
-      <div className="vcard__perf" aria-hidden="true" />
-      <div className="vcard__bottom">
-        <div className="vcard__field">
-          <span className="vcard__label">HORÁRIO</span>
-          <div className="vcard__hours">
-            {venue.hours.map(([day, time]) => (
-              <div className="vcard__hourrow" key={day}>
-                <span className="vcard__day">{day}</span>
-                <span>{time}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-        <div className="vcard__field">
-          <span className="vcard__label">ENDEREÇO</span>
-          <div className="vcard__addr">
-            {venue.address.map((line) => (
-              <span key={line}>{line}</span>
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
-
 function CoverflowCard({ venue, index, pos, fit }) {
   // `fit` (<=1) scales the whole card + its spread to fit the available height
   // on the device, so the 400px design never overflows on a real phone.
@@ -96,6 +58,7 @@ function CoverflowCard({ venue, index, pos, fit }) {
 }
 
 export default function Home() {
+  const navigate = useNavigate()
   const reduce = useReducedMotion()
   const pos = useMotionValue(0)
   const [active, setActive] = useState(0)
@@ -172,13 +135,7 @@ export default function Home() {
   }
 
   return (
-    <motion.main
-      className="home"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: reduce ? 0 : 0.32, ease: [0.22, 1, 0.36, 1] }}
-    >
+    <motion.main className="home" {...pageFade}>
       <header className="home__top">
         <h1 className="home__title">
           Gerenciar
@@ -236,7 +193,11 @@ export default function Home() {
             OFF
           </p>
         </div>
-        <button type="button" className="home__cta">
+        <button
+          type="button"
+          className="home__cta"
+          onClick={() => navigate(`/voucher/${VENUES[active].id}`)}
+        >
           <QrIcon size={20} />
           Gerar QRCode
         </button>

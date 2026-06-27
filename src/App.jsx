@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react'
-import { AnimatePresence } from 'framer-motion'
+import { AnimatePresence, MotionConfig } from 'framer-motion'
 import { Routes, Route, useLocation, useNavigate } from 'react-router-dom'
 import Welcome from './screens/Welcome'
 import Login from './screens/Login'
 import Onboard from './screens/Onboard'
 import Home from './screens/Home'
+import VoucherDetail from './screens/VoucherDetail'
+import QrCode from './screens/QrCode'
 
 const isEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim())
 
@@ -18,13 +20,14 @@ const SCREEN_BG = {
   '/email': '#e9e8e2',
   '/home': '#e9e8e2',
 }
+const bgFor = (p) => (p.startsWith('/voucher') ? '#e9e8e2' : SCREEN_BG[p] ?? '#ff5c0a')
 
 export default function App() {
   const location = useLocation()
   const navigate = useNavigate()
 
   useEffect(() => {
-    const color = SCREEN_BG[location.pathname] ?? '#ff5c0a'
+    const color = bgFor(location.pathname)
     document.documentElement.style.background = color
     document.body.style.background = color
     document.querySelector('meta[name="theme-color"]')?.setAttribute('content', color)
@@ -42,6 +45,7 @@ export default function App() {
 
   return (
     <div className="app">
+      <MotionConfig reducedMotion="user">
       <AnimatePresence>
         <Routes location={location} key={location.pathname}>
           <Route
@@ -115,8 +119,11 @@ export default function App() {
             }
           />
           <Route path="/home" element={<Home />} />
+          <Route path="/voucher/:id" element={<VoucherDetail />} />
+          <Route path="/voucher/:id/qr" element={<QrCode />} />
         </Routes>
       </AnimatePresence>
+      </MotionConfig>
     </div>
   )
 }

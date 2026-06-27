@@ -1,0 +1,268 @@
+/* Shared layout for the voucher detail + QR screens (Figma 185:443 / 185:791). */
+.voucher {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 32px calc(28px + env(safe-area-inset-bottom));
+  background: var(--cream);
+  overflow: hidden;
+  will-change: opacity, filter;
+}
+
+/* Dark round back button, top-left. */
+.voucher__back {
+  align-self: flex-start;
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: var(--ink-pill);
+  color: #fffbf4;
+  box-shadow: var(--btn-shadow);
+  transition: transform 130ms var(--ease-out);
+}
+.voucher__back:active {
+  transform: scale(0.94);
+}
+
+/* The centred content stack (card → helper → CTA). */
+.voucher__body {
+  flex: 1 1 0;
+  min-height: 0;
+  width: 100%;
+  max-width: 338px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 26px;
+}
+
+.voucher__hint {
+  margin: 0;
+  max-width: 290px;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 22px;
+  text-align: center;
+  color: var(--muted);
+}
+.voucher__hint--tight {
+  max-width: none;
+}
+
+.voucher__cta {
+  width: 100%;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 999px;
+  background: var(--ink-pill);
+  color: #fffbf4;
+  font-size: 18px;
+  font-weight: 700;
+  box-shadow: var(--btn-shadow);
+  transition: transform 130ms var(--ease-out);
+}
+.voucher__cta:active {
+  transform: scale(0.97);
+}
+
+/* ---------- Detail: full-width ticket ---------- */
+/* Two nested layers so the transforms don't fight: .voucher__float = gentle
+   idle bob, .voucher__tilt = gyroscope 3D tilt. */
+.voucher__ticket {
+  width: 100%;
+  height: 400px;
+  perspective: 1100px; /* 3D depth for the gyroscope tilt */
+}
+
+.voucher__float {
+  width: 100%;
+  height: 100%;
+}
+
+.voucher__tilt {
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  will-change: transform;
+  /* Same static two-layer Figma shadow as the Home cards. */
+  filter: drop-shadow(0 2px 8px rgba(14, 13, 7, 0.08)) drop-shadow(0 1px 2px rgba(14, 13, 7, 0.08));
+}
+
+/* ---------- QR screen: white ticket ---------- */
+/* Same ticket cut as the voucher card: two side notches punched on the
+   perforation line (--ny from the top), so it reads as a tear-off stub. */
+.qr {
+  --r: 10px; /* notch radius */
+  /* Perforation line: 32 pad + 66 header (logo 32 + gap 16 + place 18) + 24 gap. */
+  --ny: 123px;
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 32px;
+  border-radius: 24px;
+  background: var(--paper);
+  color: var(--ink);
+  /* drop-shadow (not box-shadow) so the notch mask doesn't clip the shadow —
+     it then follows the notched silhouette, like a real ticket. */
+  filter: drop-shadow(0 16px 36px rgba(14, 13, 7, 0.1)) drop-shadow(0 2px 6px rgba(14, 13, 7, 0.06));
+  -webkit-mask:
+    radial-gradient(circle var(--r) at left var(--ny), #0000 calc(var(--r) - 0.5px), #000 var(--r)) left / 50.5% 100% no-repeat,
+    radial-gradient(circle var(--r) at right var(--ny), #0000 calc(var(--r) - 0.5px), #000 var(--r)) right / 50.5% 100% no-repeat;
+  mask:
+    radial-gradient(circle var(--r) at left var(--ny), #0000 calc(var(--r) - 0.5px), #000 var(--r)) left / 50.5% 100% no-repeat,
+    radial-gradient(circle var(--r) at right var(--ny), #0000 calc(var(--r) - 0.5px), #000 var(--r)) right / 50.5% 100% no-repeat;
+}
+
+.qr__head {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.qr__logo {
+  height: 32px;
+  width: 100%;
+  background: currentColor;
+  -webkit-mask: var(--logo) left center / auto 100% no-repeat;
+  mask: var(--logo) left center / auto 100% no-repeat;
+}
+
+.qr__place {
+  font-size: 14px;
+  line-height: 18px; /* fixed so the header height (→ notch line) is deterministic */
+  font-weight: 500;
+  opacity: 0.8;
+}
+
+/* Dashed line: in flow at the content width (Figma insets it by the padding),
+   landing on the notch line via the 24px gaps above and below. */
+.qr__perf {
+  height: 1.5px;
+  background-image: repeating-linear-gradient(to right, currentColor 0 6px, transparent 6px 12px);
+  opacity: 0.28;
+}
+
+.qr__meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.qr__expira {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.qr__expira-label {
+  font-size: 14px;
+  line-height: 18px;
+  font-weight: 500;
+  opacity: 0.8;
+}
+
+.qr__time {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 22px;
+  line-height: 28px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Figma renders the clock glyph at 40% (the number stays full strength). */
+.qr__time svg {
+  flex-shrink: 0;
+  opacity: 0.4;
+}
+
+/* Only the two seconds digits animate; the "m"/"s" letters stay put. The box is
+   a fixed two-digit width (tabular) so the trailing "s" never shifts. */
+.qr__secs {
+  position: relative;
+  display: inline-block;
+  width: 2ch;
+  text-align: right;
+}
+.qr__secs > span {
+  display: inline-block;
+}
+
+.qr__off {
+  font-size: 14px;
+  font-weight: 700;
+  color: #302503;
+  opacity: 0.4;
+}
+
+/* QR + fallback code stay blurred behind the reveal button until tapped. */
+.qr__code {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.qr__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  filter: blur(7px);
+  transition: filter 0.55s var(--ease-out);
+}
+.qr__code.is-revealed .qr__img {
+  filter: blur(0);
+}
+
+.qr__reveal {
+  position: absolute;
+  padding: 13px 30px;
+  border-radius: 999px;
+  background: var(--ink-pill);
+  color: #fffbf4;
+  font-size: 16px;
+  font-weight: 700;
+  white-space: nowrap;
+  box-shadow: var(--btn-shadow);
+  transition: transform 130ms var(--ease-out), opacity 0.2s var(--ease-out);
+}
+.qr__reveal:active {
+  transform: scale(0.96);
+}
+
+.qr__codeline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 18px;
+}
+
+.qr__codeline-label {
+  opacity: 0.8;
+}
+
+.qr__codeline-value {
+  text-align: right;
+  filter: blur(6px);
+  transition: filter 0.55s var(--ease-out);
+}
+.qr__codeline.is-revealed .qr__codeline-value {
+  filter: blur(0);
+}

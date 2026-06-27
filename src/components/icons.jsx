@@ -85,6 +85,21 @@ export function QrIcon({ size = 20 }) {
   )
 }
 
+// Clock (system / time) — "Expira em" countdown on the QR screen. Exported
+// straight from the Figma system set (filled glyph, shown at 40% opacity).
+export function ClockIcon({ size = 16 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M8 1.33333C11.6819 1.33333 14.6667 4.3181 14.6667 8C14.6667 11.6819 11.6819 14.6667 8 14.6667C4.3181 14.6667 1.33333 11.6819 1.33333 8C1.33333 4.3181 4.3181 1.33333 8 1.33333ZM8 4C7.63181 4 7.33333 4.29848 7.33333 4.66667V7.17187C7.33341 7.87901 7.61456 8.55727 8.11458 9.05729L9.52865 10.4714C9.78899 10.7317 10.211 10.7317 10.4714 10.4714C10.7317 10.211 10.7317 9.78899 10.4714 9.52865L9.05729 8.11458C8.80731 7.86461 8.66675 7.52539 8.66667 7.17187V4.66667C8.66667 4.29848 8.36819 4 8 4Z"
+        fill="currentColor"
+      />
+    </svg>
+  )
+}
+
 // Figma exports the check as a corner stroke rotated 45°; this is the same
 // stroke (weight 2, round) drawn directly as a checkmark.
 export function CheckIcon({ size = 20 }) {
