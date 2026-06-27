@@ -56,7 +56,7 @@
 .home__stage {
   position: relative;
   width: 100%;
-  height: 420px;
+  height: 100%; /* fills the carousel; cards are scaled to fit via JS `fit` */
   perspective: 1200px;
 }
 

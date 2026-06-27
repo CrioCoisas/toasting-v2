@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion, animate, useMotionValue, useTransform, useReducedMotion } from 'framer-motion'
 import { QrIcon } from '../components/icons'
 import { VENUES } from '../data/venues'
@@ -80,12 +80,14 @@ function VoucherCard({ venue }) {
   )
 }
 
-function CoverflowCard({ venue, index, pos }) {
+function CoverflowCard({ venue, index, pos, fit }) {
+  // `fit` (<=1) scales the whole card + its spread to fit the available height
+  // on the device, so the 400px design never overflows on a real phone.
   const d = (p) => wrapDelta(index - p)
-  const x = useTransform(pos, (p) => xOf(d(p)))
-  const z = useTransform(pos, (p) => zOf(d(p)))
+  const x = useTransform(pos, (p) => xOf(d(p)) * fit)
+  const z = useTransform(pos, (p) => zOf(d(p)) * fit)
   const rotateY = useTransform(pos, (p) => rotOf(d(p)))
-  const scale = useTransform(pos, (p) => scaleOf(d(p)))
+  const scale = useTransform(pos, (p) => scaleOf(d(p)) * fit)
   const opacity = useTransform(pos, (p) => opacityOf(d(p)))
   const zIndex = useTransform(pos, (p) => zIndexOf(d(p)))
   const filter = useTransform(pos, (p) => filterOf(d(p)))
@@ -102,6 +104,22 @@ export default function Home() {
   const [active, setActive] = useState(0)
   const drag = useRef(null)
 
+  // Scale the carousel down to whatever vertical room the device actually gives
+  // us (Safari's chrome eats height), so the 400px card never overflows the
+  // header/footer. Measured from the carousel's own box, so it just adapts.
+  const carouselRef = useRef(null)
+  const [fit, setFit] = useState(1)
+  useEffect(() => {
+    const el = carouselRef.current
+    if (!el) return
+    const ro = new ResizeObserver(() => {
+      setFit(clamp((el.clientHeight - 24) / 400, 0.55, 1))
+    })
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [])
+  const spacing = SPACING * fit
+
   // target is an unbounded index; the carousel animates the short way and the
   // indicator shows its wrapped position. A short tick fires whenever the
   // selected voucher actually changes (swipe or dot tap).
@@ -110,10 +128,11 @@ export default function Home() {
     if (next !== active) haptic(10)
     setActive(next)
     if (reduce) pos.set(target)
-    else animate(pos, target, { type: 'spring', stiffness: 250, damping: 34, restDelta: 0.0008 })
+    else animate(pos, target, { type: 'spring', stiffness: 400, damping: 35, restDelta: 0.0008 })
   }
 
   const onDown = (e) => {
+    pos.stop() // kill any in-flight snap so the drag doesn't fight it (fast-swipe jank)
     drag.current = { x0: e.clientX, p0: pos.get(), vx: 0, lx: e.clientX, lt: performance.now() }
     e.currentTarget.setPointerCapture?.(e.pointerId)
   }
@@ -127,7 +146,7 @@ export default function Home() {
       g.lx = e.clientX
       g.lt = now
     }
-    pos.set(g.p0 - (e.clientX - g.x0) / SPACING)
+    pos.set(g.p0 - (e.clientX - g.x0) / spacing)
   }
   const onUp = () => {
     const g = drag.current
@@ -138,7 +157,7 @@ export default function Home() {
     // halfway point commits that many cards; a short fast flick advances one.
     const start = Math.round(g.p0)
     const moved = pos.get() - g.p0 // signed cards dragged
-    const flick = -(g.vx * 140) / SPACING // signed cards of momentum
+    const flick = -(g.vx * 140) / spacing // signed cards of momentum
     let step = 0
     if (Math.abs(moved) >= 0.5) step = Math.round(moved)
     else if (Math.abs(flick) >= 0.5) step = Math.sign(flick)
@@ -171,6 +190,7 @@ export default function Home() {
 
       <div
         className="home__carousel"
+        ref={carouselRef}
         onPointerDown={onDown}
         onPointerMove={onMove}
         onPointerUp={onUp}
@@ -180,7 +200,7 @@ export default function Home() {
       >
         <div className="home__stage">
           {VENUES.map((venue, i) => (
-            <CoverflowCard key={venue.id} venue={venue} index={i} pos={pos} />
+            <CoverflowCard key={venue.id} venue={venue} index={i} pos={pos} fit={fit} />
           ))}
         </div>
       </div>
