@@ -7,7 +7,7 @@ import { pageFade } from '../motion'
 import qrSrc from '../assets/qr.svg'
 import './Voucher.css'
 
-const VALID_SECONDS = 2 * 60 * 60 // QR is valid for 2 hours
+const VALID_SECONDS = 5 * 60 // QR is valid for 5 minutes
 
 function haptic(p) {
   if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate(p)
@@ -50,7 +50,13 @@ export default function QrCode() {
           <div className="qr__meta">
             <div className="qr__expira">
               <span className="qr__expira-label">Expira em:</span>
-              <span className="qr__time">
+              <span
+                className={
+                  'qr__time' +
+                  (left <= 60 ? ' is-warning' : '') +
+                  (left <= 10 ? ' is-urgent' : '')
+                }
+              >
                 <ClockIcon size={16} />
                 {Math.floor(Math.max(0, left) / 60)}m{' '}
                 <span className="qr__secs">

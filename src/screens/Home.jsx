@@ -176,7 +176,7 @@ export default function Home() {
 
       <div className="home__footer">
         <div className="home__promo">
-          <p className="home__promo-eyebrow">PARA TODA A MESA</p>
+          <p className="home__promo-eyebrow">USO INDIVIDUAL</p>
           <p className="home__promo-value">
             <AnimatePresence mode="popLayout" initial={false}>
               <motion.span
