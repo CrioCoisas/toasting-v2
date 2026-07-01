@@ -33,12 +33,12 @@ const enter = (reduce) => ({
   transition: { duration: reduce ? 0 : 0.28, ease: [0.22, 1, 0.36, 1] },
 })
 
-// Step dots: active step is a 24px bar (its position morphs between the two
-// staff screens via the shared layoutId), the other is a 4px dot at 40%.
+// Step dots: active step is a 24px bar (its position morphs between the
+// staff steps via the shared layoutId), the others are 4px dots at 40%.
 function Steps({ step, reduce }) {
   return (
-    <div className="staff__steps" role="group" aria-label={`Etapa ${step} de 2`}>
-      {[1, 2].map((n) => {
+    <div className="staff__steps" role="group" aria-label={`Etapa ${step} de 3`}>
+      {[1, 2, 3].map((n) => {
         const active = n === step
         if (active && !reduce) {
           return (
@@ -56,15 +56,27 @@ function Steps({ step, reduce }) {
   )
 }
 
-// Step 1 — collect the house, name and team code.
+// Steps 1 & 2 — collect house + name, then the team code (sub-step within one
+// screen so the fields stay in a single form).
 export function StaffData({ onContinue }) {
   const reduce = useReducedMotion()
+  const [sub, setSub] = useState(1) // 1: casa + nome, 2: código
   const [casa, setCasa] = useState('')
   const [nome, setNome] = useState('')
   const [codigo, setCodigo] = useState('')
 
+  // Step 2 is internal state, not a route — so intercept the device/browser back
+  // and return to step 1 instead of popping the whole /staff route to login.
+  useEffect(() => {
+    if (sub !== 2) return
+    window.history.pushState({ staffSub: 2 }, '')
+    const onPop = () => setSub(1)
+    window.addEventListener('popstate', onPop)
+    return () => window.removeEventListener('popstate', onPop)
+  }, [sub])
+
   const venue = VENUES.find((v) => v.id === casa)
-  const valid = casa && nome.trim() && codigo.trim()
+  const valid = sub === 1 ? casa && nome.trim() : codigo.trim()
 
   const submit = (e) => {
     e.preventDefault()
@@ -73,93 +85,105 @@ export function StaffData({ onContinue }) {
       return
     }
     haptic([8, 40, 12])
+    if (sub === 1) {
+      setSub(2)
+      return
+    }
     onContinue?.()
   }
 
   return (
     <motion.main className="staff" {...enter(reduce)}>
       <form className="staff__inner" onSubmit={submit}>
+        <div className="staff__scroll">
         <div className="staff__top">
-          <Steps step={1} reduce={reduce} />
+          <Steps step={sub} reduce={reduce} />
           <header className="staff__head">
             <p className="staff__eyebrow">Espera aí ,</p>
             <h1 className="staff__title">Vamos identificar você</h1>
           </header>
         </div>
 
-        <div className="staff__fields">
-          <div className="staff__field">
-            <p className="staff__label">Casa</p>
-            <div className="staff__pill staff__pill--select">
-              {venue ? (
-                <span className="staff__casa-val">
-                  <span>{venue.name}</span>
-                  <span className="staff__casa-sep" />
-                  <span className="staff__casa-hood">{venue.neighborhood.split(',')[0]}</span>
-                </span>
-              ) : (
-                <span className="staff__casa-val staff__casa-placeholder">Escolha a casa</span>
-              )}
-              <ChevronDownIcon size={24} />
-              <select
-                className="staff__select"
-                value={casa}
-                onChange={(e) => setCasa(e.target.value)}
-                aria-label="Casa"
-              >
-                <option value="" disabled>
-                  Escolha a casa
-                </option>
-                {VENUES.map((v) => (
-                  <option key={v.id} value={v.id}>
-                    {v.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          <div className="staff__field">
-            <p className="staff__label">Nome e sobrenome</p>
-            <div className="staff__pill">
-              <input
-                className="staff__input"
-                value={nome}
-                onChange={(e) => setNome(e.target.value)}
-                placeholder="Informe seu nome"
-                autoComplete="name"
-                autoCapitalize="words"
-                enterKeyHint="next"
-                aria-label="Nome e sobrenome"
-              />
-            </div>
-          </div>
-
-          <div className="staff__field staff__field--code">
+        {sub === 1 ? (
+          <div className="staff__fields">
             <div className="staff__field">
-              <p className="staff__label">Código</p>
+              <p className="staff__label">Casa</p>
+              <div className="staff__pill staff__pill--select">
+                {venue ? (
+                  <span className="staff__casa-val">
+                    <span>{venue.name}</span>
+                    <span className="staff__casa-sep" />
+                    <span className="staff__casa-hood">{venue.neighborhood.split(',')[0]}</span>
+                  </span>
+                ) : (
+                  <span className="staff__casa-val staff__casa-placeholder">Escolha a casa</span>
+                )}
+                <ChevronDownIcon size={24} />
+                <select
+                  className="staff__select"
+                  value={casa}
+                  onChange={(e) => setCasa(e.target.value)}
+                  aria-label="Casa"
+                >
+                  <option value="" disabled>
+                    Escolha a casa
+                  </option>
+                  {VENUES.map((v) => (
+                    <option key={v.id} value={v.id}>
+                      {v.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div className="staff__field">
+              <p className="staff__label">Nome e sobrenome</p>
               <div className="staff__pill">
                 <input
                   className="staff__input"
-                  value={codigo}
-                  onChange={(e) => setCodigo(e.target.value)}
-                  placeholder="EQUIPE-7120"
-                  autoComplete="off"
-                  autoCapitalize="characters"
-                  autoCorrect="off"
-                  spellCheck={false}
-                  enterKeyHint="go"
-                  aria-label="Código"
+                  value={nome}
+                  onChange={(e) => setNome(e.target.value)}
+                  placeholder="Informe seu nome"
+                  autoComplete="name"
+                  autoCapitalize="words"
+                  enterKeyHint="next"
+                  aria-label="Nome e sobrenome"
                 />
               </div>
             </div>
-            <p className="staff__helper">
-              Use o código de equipe da sua casa. O benefício vale enquanto você for funcionário
-              ativo.
-            </p>
           </div>
+        ) : (
+          <div className="staff__fields">
+            <div className="staff__field staff__field--code">
+              <div className="staff__field">
+                <p className="staff__label">Código</p>
+                <div className="staff__pill">
+                  <input
+                    className="staff__input"
+                    value={codigo}
+                    onChange={(e) => setCodigo(e.target.value)}
+                    placeholder="EQUIPE-7120"
+                    autoComplete="off"
+                    autoCapitalize="characters"
+                    autoCorrect="off"
+                    spellCheck={false}
+                    enterKeyHint="go"
+                    aria-label="Código"
+                    autoFocus
+                  />
+                </div>
+              </div>
+              <p className="staff__helper">
+                Use o código de equipe da sua casa. O benefício vale enquanto você for funcionário
+                ativo.
+              </p>
+            </div>
+          </div>
+        )}
         </div>
 
+        <div className="staff__ctafade" aria-hidden="true" />
         <button type="submit" className={'staff__cta' + (valid ? '' : ' is-disabled')} aria-disabled={!valid}>
           Continuar
         </button>
@@ -598,8 +622,9 @@ export function StaffCode({ onSubmit, onResend }) {
   return (
     <motion.main className="staff" {...enter(reduce)}>
       <form className="staff__inner" onSubmit={submit}>
+        <div className="staff__scroll">
         <div className="staff__top">
-          <Steps step={2} reduce={reduce} />
+          <Steps step={3} reduce={reduce} />
           <header className="staff__head">
             <p className="staff__eyebrow">Confere o email e</p>
             <h1 className="staff__title">Digite o código</h1>
@@ -621,7 +646,9 @@ export function StaffCode({ onSubmit, onResend }) {
             </p>
           </div>
         </div>
+        </div>
 
+        <div className="staff__ctafade" aria-hidden="true" />
         <button type="submit" className={'staff__cta' + (valid ? '' : ' is-disabled')} aria-disabled={!valid}>
           Entrar
         </button>
@@ -632,7 +659,7 @@ export function StaffCode({ onSubmit, onResend }) {
 
 // Staff QR — the carteirinha as a scannable ticket for the balcão to validate.
 // Shows the casa the member picked from the list. TODO(db): real per-member QR.
-export function StaffQr({ onDone }) {
+export function StaffQr() {
   const reduce = useReducedMotion()
   const { id } = useParams()
   const venue = VENUES.find((v) => v.id === id) ?? VENUES[0]
@@ -664,10 +691,6 @@ export function StaffQr({ onDone }) {
           O funcionário do balcão valida sua carteirinha e aplica os 30% na conta.
         </p>
       </div>
-
-      <button type="button" className="staff__cta" onClick={onDone}>
-        Concluir
-      </button>
     </motion.main>
   )
 }

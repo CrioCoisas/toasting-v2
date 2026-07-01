@@ -44,15 +44,12 @@ function useReceiptData() {
     const ampm = now.getHours() >= 12 ? 'PM' : 'AM'
     const h12 = now.getHours() % 12 || 12
     const time = `${pad(h12)}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`
-    return {
-      stamp: `${date}, ${time} ${ampm}`,
-      registro: Math.floor(Math.random() * 1000) + 1, // 1–1000
-    }
+    return { stamp: `${date}, ${time} ${ampm}` }
   }, [])
 }
 
 export default function Receipt() {
-  const { stamp, registro } = useReceiptData()
+  const { stamp } = useReceiptData()
   return (
     <div className="receipt" role="img" aria-label="Recibo Toasting">
       <svg
@@ -76,19 +73,6 @@ export default function Receipt() {
           <p>2026 Toasting App</p>
           <p>Rio de Janeiro, RJ</p>
           <p>{stamp}</p>
-        </div>
-
-        <div className="receipt__perf" aria-hidden="true">{'='.repeat(48)}</div>
-
-        <div className="receipt__rows">
-          <div className="receipt__row">
-            <span>Registro:</span>
-            <span>{registro}</span>
-          </div>
-          <div className="receipt__row">
-            <span>Versão #:</span>
-            <span>1.0.2</span>
-          </div>
         </div>
 
         <div className="receipt__perf" aria-hidden="true">{'='.repeat(48)}</div>
