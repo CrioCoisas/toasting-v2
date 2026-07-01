@@ -56,6 +56,7 @@ export default function App() {
                 onSelectAdmin={() => {
                   /* Admin flow not built yet */
                 }}
+                onSelectStaff={() => navigate('/login')} /* ponytail: no staff flow yet */
               />
             }
           />

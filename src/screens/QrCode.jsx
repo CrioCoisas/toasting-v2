@@ -19,10 +19,11 @@ export default function QrCode() {
 
   const [revealed, setRevealed] = useState(false)
   const [left, setLeft] = useState(VALID_SECONDS)
+  const [cycle, setCycle] = useState(0) // bumps to (re)start the countdown
   const expiry = useRef(0)
 
   // Countdown only runs once the QR is revealed; it ticks off a real expiry
-  // timestamp so it stays accurate if the tab is backgrounded.
+  // timestamp so it stays accurate if the tab is backgrounded. Re-runs on renew.
   useEffect(() => {
     if (!revealed) return
     expiry.current = Date.now() + VALID_SECONDS * 1000
@@ -30,11 +31,19 @@ export default function QrCode() {
     tick()
     const t = setInterval(tick, 1000)
     return () => clearInterval(t)
-  }, [revealed])
+  }, [revealed, cycle])
+
+  const expired = revealed && left === 0
 
   const reveal = () => {
     haptic(10)
     setRevealed(true)
+  }
+
+  const renew = () => {
+    haptic(10)
+    setLeft(VALID_SECONDS)
+    setCycle((c) => c + 1)
   }
 
   return (
@@ -78,16 +87,16 @@ export default function QrCode() {
             <span className="qr__off">{venue.discount}% OFF</span>
           </div>
 
-          <div className={'qr__code' + (revealed ? ' is-revealed' : '')}>
-            <img className="qr__img" src={qrSrc} alt={revealed ? 'QR Code do seu vale' : ''} aria-hidden={!revealed} />
-            {!revealed && (
-              <button type="button" className="qr__reveal" onClick={reveal}>
-                Clique para revelar o QR
+          <div className={'qr__code' + (revealed && !expired ? ' is-revealed' : '')}>
+            <img className="qr__img" src={qrSrc} alt={revealed && !expired ? 'QR Code do seu vale' : ''} aria-hidden={!revealed || expired} />
+            {(!revealed || expired) && (
+              <button type="button" className="qr__reveal" onClick={expired ? renew : reveal}>
+                {expired ? 'QR expirado — gerar novo' : 'Clique para revelar o QR'}
               </button>
             )}
           </div>
 
-          <div className={'qr__codeline' + (revealed ? ' is-revealed' : '')}>
+          <div className={'qr__codeline' + (revealed && !expired ? ' is-revealed' : '')}>
             <span className="qr__codeline-label">Código:</span>
             <span className="qr__codeline-value">TST-R2-776884</span>
           </div>
