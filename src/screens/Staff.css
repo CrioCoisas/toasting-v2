@@ -253,12 +253,7 @@
   width: 100%;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-}
-
-.staff__otp-triplet {
-  display: flex;
-  align-items: center;
+  justify-content: center;
   gap: 8px;
 }
 
@@ -300,14 +295,6 @@
   pointer-events: none;
 }
 
-.staff__otp-dash {
-  flex-shrink: 0;
-  width: 6px;
-  height: 2px;
-  border-radius: 999px;
-  background: var(--ink);
-  opacity: 0.8;
-}
 
 .staff__resend {
   margin: 0;
