@@ -115,6 +115,13 @@ export default function Home() {
     const g = drag.current
     if (!g) return
     drag.current = null
+    // A tap (no real drag/flick) on the focused card opens it — same as the CTA.
+    const movedTap = pos.get() - g.p0
+    const flickTap = -(g.vx * 140) / spacing
+    if (Math.abs(movedTap) < 0.06 && Math.abs(flickTap) < 0.3) {
+      navigate(`/voucher/${VENUES[active].id}`)
+      return
+    }
     // Steps are decided by drag distance OR a flick — never both added together
     // (that double-counting let a single swipe jump two cards). A drag past the
     // halfway point commits that many cards; a short fast flick advances one.

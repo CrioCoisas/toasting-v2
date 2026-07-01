@@ -5,16 +5,54 @@
   flex-direction: column;
   padding: 40px 32px calc(40px + env(safe-area-inset-bottom));
   background: var(--cream);
+  overflow-y: auto; /* short viewports scroll instead of clipping the CTA */
 }
 
-/* Top block, flexible middle, CTA pinned to the bottom (Figma justify-between). */
+/* Content scrolls; the CTA is pinned to the bottom with a fade behind it, so on
+   short (700px) phones nothing clips — you scroll the fields under the button. */
 .staff__inner {
+  position: relative;
   flex: 1 1 0;
   min-height: 0;
   display: flex;
   flex-direction: column;
+  width: 100%;
+}
+
+.staff__scroll {
+  flex: 1 1 0;
+  min-height: 0;
+  width: 100%;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: space-between;
+  padding-bottom: 90px; /* clear the pinned CTA so the last field is reachable */
+  scrollbar-width: none;
+}
+
+.staff__scroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* Only the form screens pin their CTA (staffqr keeps its CTA in normal flow). */
+.staff__inner .staff__cta {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+}
+
+.staff__ctafade {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 96px;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(233, 232, 226, 0) 0%, var(--cream) 60%);
 }
 
 /* Steps + headline travel together (Figma 40 gap). */
@@ -75,14 +113,13 @@
 
 /* ---------- Step 1: fields ---------- */
 .staff__fields {
-  flex: 1 1 0;
-  min-height: 0;
+  flex: 0 0 auto;
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 32px;
-  padding: 48px 0;
+  padding: 32px 0;
 }
 
 .staff__field {
@@ -196,13 +233,12 @@
 
 /* ---------- Step 2: code ---------- */
 .staff__code-wrap {
-  flex: 1 1 0;
-  min-height: 0;
+  flex: 0 0 auto;
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding: 88px 0;
+  padding: 48px 0;
 }
 
 .staff__otp-group {
@@ -228,7 +264,8 @@
 
 .staff__otp-box {
   position: relative;
-  width: 47px;
+  flex: 0 1 47px; /* 47px on target widths; shrinks so 6 pills never overflow narrow phones */
+  min-width: 0;
   height: 64px;
   border-radius: 999px;
   background: var(--code-tint);
@@ -297,13 +334,22 @@
 }
 
 /* ---------- Staff home (carteirinha + casas tabs) ---------- */
-/* One tab view at a time; fills the space above the persistent nav. */
+/* Nav stays pinned: the container never scrolls, only the view inside does.
+   Bottom pad trimmed so the nav sits lower than the other screens' CTA. */
+.staffhome {
+  overflow: hidden;
+  gap: 16px;
+  padding-bottom: calc(16px + env(safe-area-inset-bottom));
+}
+
+/* One tab view at a time; scrolls under the fixed nav when it's taller than the
+   frame (700px phones) instead of clipping. */
 .staffhome__view {
   flex: 1 1 0;
   min-height: 0;
   display: flex;
   flex-direction: column;
-  gap: 64px;
+  gap: 32px;
   width: 100%;
 }
 
@@ -337,7 +383,7 @@
 .staffhome__card-group {
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 20px;
   width: 100%;
 }
 
@@ -604,10 +650,16 @@
 /* Only the wrapper is off-screen; the captured node stays at 0,0 so the
    rasteriser draws it inside the frame (offsetting the node itself renders the
    content off-canvas → blank/orange-only export). */
+/* On-screen but invisible (not left:-99999px): iOS Safari skips painting/decoding
+   far-off-screen nodes, so html-to-image captured a partial frame — missing the
+   shadow, border ring and images. z-index:-1 + opacity:0 keeps it hidden while
+   still painted; the captured node stays at 0,0 (ancestor opacity isn't cloned). */
 .dlcard-wrap {
   position: fixed;
-  left: -99999px;
+  left: 0;
   top: 0;
+  z-index: -1;
+  opacity: 0;
   pointer-events: none;
 }
 
@@ -899,15 +951,19 @@
 }
 
 /* ---------- Staff QR ticket ---------- */
+/* Container gap separates the hint block from the pinned Concluir button. */
+.staffqr {
+  gap: 24px;
+}
+
 .staffqr__body {
-  flex: 1 1 0;
-  min-height: 0;
+  flex: 1 0 auto; /* grow to content so the ticket never clips at the top */
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 24px;
+  gap: 32px;
 }
 
 .staffqr__ticket {

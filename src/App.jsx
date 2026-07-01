@@ -124,7 +124,7 @@ export default function App() {
           <Route path="/staff" element={<StaffData onContinue={() => navigate('/staff/code')} />} />
           <Route path="/staff/code" element={<StaffCode onSubmit={() => navigate('/staff/home')} />} />
           <Route path="/staff/home" element={<StaffHome onOpenCasa={(id) => navigate(`/staff/qr/${id}`)} />} />
-          <Route path="/staff/qr/:id" element={<StaffQr onDone={() => navigate('/staff/home')} />} />
+          <Route path="/staff/qr/:id" element={<StaffQr />} />
           <Route path="/home" element={<Home />} />
           <Route path="/voucher/:id" element={<VoucherDetail />} />
           <Route path="/voucher/:id/qr" element={<QrCode />} />

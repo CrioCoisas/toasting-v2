@@ -6,7 +6,7 @@
   padding: 40px 32px calc(40px + env(safe-area-inset-bottom));
   gap: 32px; /* receipt-to-buttons spacing; stage absorbs the rest of the slack */
   background: var(--orange);
-  --receipt-h: 410px; /* white card; taller than Figma's 367 to fit the === rows + bigger logo without clipping the barcode */
+  --receipt-h: 330px; /* white card; hugs the content (header + stamp + perf + barcode) */
 }
 
 /* The middle flexes; the receipt is centered in it */
