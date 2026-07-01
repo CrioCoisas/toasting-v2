@@ -1,0 +1,322 @@
+.staff {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 40px 32px calc(40px + env(safe-area-inset-bottom));
+  background: var(--cream);
+}
+
+/* Top block, flexible middle, CTA pinned to the bottom (Figma justify-between). */
+.staff__inner {
+  flex: 1 1 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Steps + headline travel together (Figma 40 gap). */
+.staff__top {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+  width: 100%;
+}
+
+.staff__steps {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.staff__step {
+  width: 4px;
+  height: 4px;
+  border-radius: 25px;
+  background: var(--ink);
+  opacity: 0.4;
+  transition: width 0.35s var(--ease-out), opacity 0.35s var(--ease-out);
+}
+
+.staff__step.is-active {
+  width: 24px;
+  opacity: 1;
+}
+
+.staff__head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+}
+
+.staff__eyebrow {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: normal;
+  color: var(--muted);
+}
+
+.staff__title {
+  margin: 0;
+  width: 252px;
+  max-width: 100%;
+  font-size: 32px;
+  font-weight: 700;
+  line-height: normal;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+
+/* ---------- Step 1: fields ---------- */
+.staff__fields {
+  flex: 1 1 0;
+  min-height: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 32px;
+  padding: 48px 0;
+}
+
+.staff__field {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+/* Código groups its (label + pill) field with the helper line at 12px. */
+.staff__field--code {
+  gap: 12px;
+}
+
+.staff__label {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 20px;
+  letter-spacing: 0.32px;
+  color: var(--ink);
+  opacity: 0.8;
+}
+
+.staff__pill {
+  position: relative;
+  width: 100%;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+  border-radius: 999px;
+  background: var(--code-tint);
+  color: var(--ink);
+}
+
+.staff__pill--select {
+  justify-content: space-between;
+}
+
+/* Casa: custom two-tone display sits under a transparent native picker. */
+.staff__casa-val {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 24px;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+.staff__casa-sep {
+  width: 3px;
+  height: 3px;
+  border-radius: 29px;
+  background: var(--ink);
+}
+
+.staff__casa-hood {
+  opacity: 0.4;
+}
+
+.staff__casa-placeholder {
+  opacity: 0.4;
+}
+
+.staff__select {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  opacity: 0;
+  background: transparent;
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+}
+
+.staff__input {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  font-family: inherit;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 24px;
+  color: var(--ink);
+}
+
+.staff__input::placeholder {
+  color: var(--ink);
+  opacity: 0.4;
+}
+
+.staff__helper {
+  margin: 0;
+  width: 100%;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 18px;
+  color: var(--muted);
+}
+
+/* ---------- Step 2: code ---------- */
+.staff__code-wrap {
+  flex: 1 1 0;
+  min-height: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 88px 0;
+}
+
+.staff__otp-group {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.staff__otp-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.staff__otp-triplet {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.staff__otp-box {
+  position: relative;
+  width: 47px;
+  height: 64px;
+  border-radius: 999px;
+  background: var(--code-tint);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.staff__otp-input {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  text-align: center;
+  font-family: inherit;
+  font-size: 32px;
+  font-weight: 600;
+  color: var(--ink);
+  caret-color: var(--orange);
+}
+
+.staff__otp-dot {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  border-radius: 29px;
+  background: var(--ink);
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.staff__otp-dash {
+  flex-shrink: 0;
+  width: 6px;
+  height: 2px;
+  border-radius: 999px;
+  background: var(--ink);
+  opacity: 0.8;
+}
+
+.staff__resend {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 18px;
+  line-height: 22px;
+  color: var(--ink);
+}
+
+.staff__resend-q {
+  font-weight: 500;
+  opacity: 0.4;
+}
+
+.staff__resend-a {
+  font: inherit;
+  color: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* ---------- CTA ---------- */
+.staff__cta {
+  width: 100%;
+  height: 62px;
+  border-radius: 43px;
+  background: var(--ink-pill);
+  color: #fffbf4;
+  font-size: 18px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 130ms var(--ease-out), opacity 200ms var(--ease-out);
+}
+
+.staff__cta:active {
+  transform: scale(0.98);
+}
+
+/* Figma disabled state is the full pill at 50%. */
+.staff__cta.is-disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}

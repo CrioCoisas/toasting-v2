@@ -100,6 +100,22 @@ export function ClockIcon({ size = 16 }) {
   )
 }
 
+// Down chevron for the "Casa" select pill on the staff flow (system set:
+// arrow / down_small).
+export function ChevronDownIcon({ size = 24 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path
+        d="M14.8284 10.9997L12 13.8281L9.17157 10.9997"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
 // Figma exports the check as a corner stroke rotated 45°; this is the same
 // stroke (weight 2, round) drawn directly as a checkmark.
 export function CheckIcon({ size = 20 }) {
