@@ -633,11 +633,7 @@ export function StaffCode({ onSubmit, onResend }) {
 
         <div className="staff__code-wrap">
           <div className="staff__otp-group">
-            <div className="staff__otp-row">
-              <div className="staff__otp-triplet">{[0, 1, 2].map(box)}</div>
-              <span className="staff__otp-dash" />
-              <div className="staff__otp-triplet">{[3, 4, 5].map(box)}</div>
-            </div>
+            <div className="staff__otp-row">{[0, 1, 2, 3, 4, 5].map(box)}</div>
             <p className="staff__resend">
               <span className="staff__resend-q">Não chegou?</span>
               <button type="button" className="staff__resend-a" onClick={onResend}>
