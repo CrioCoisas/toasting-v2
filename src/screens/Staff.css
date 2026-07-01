@@ -535,6 +535,34 @@
   opacity: 0.4;
 }
 
+/* Discount + download button row. */
+.card__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.card__download {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background: var(--orange);
+  color: #ffffff;
+  display: grid;
+  place-items: center;
+  transition: transform 130ms var(--ease-out), opacity 130ms var(--ease-out);
+}
+
+.card__download:active {
+  transform: scale(0.92);
+}
+
+.card__download:disabled {
+  opacity: 0.6;
+}
+
 /* ---- Action + hint ---- */
 .staffhome__action {
   display: flex;
@@ -572,6 +600,62 @@
   color: var(--muted);
 }
 
+/* ---- Downloadable carteirinha (rendered off-screen, exported to PNG) ---- */
+/* Only the wrapper is off-screen; the captured node stays at 0,0 so the
+   rasteriser draws it inside the frame (offsetting the node itself renders the
+   content off-canvas → blank/orange-only export). */
+.dlcard-wrap {
+  position: fixed;
+  left: -99999px;
+  top: 0;
+  pointer-events: none;
+}
+
+.dlcard {
+  position: relative;
+  width: 600px;
+  height: 400px;
+  border-radius: 24px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink-pill);
+  font-family: 'SF Pro Rounded', var(--font-sans);
+}
+
+/* Orange + tiled Toasting pattern + rounded corners, all baked in (Figma). */
+.dlcard__bg {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 600px;
+  height: 400px;
+}
+
+.dlcard__stack {
+  position: relative;
+  z-index: 1;
+  width: 480px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 13px;
+}
+
+.dlcard__meta {
+  display: flex;
+  gap: 40px;
+  width: 100%;
+}
+
+.dlcard__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
 /* ---- Casas list ---- */
 .casas {
   position: relative;
@@ -607,7 +691,7 @@
   right: 0;
   z-index: 2;
   pointer-events: none;
-  transition: opacity 0.55s var(--ease-in-out);
+  transition: opacity 0.15s var(--ease-out);
 }
 
 /* Hidden at the matching scroll extreme so the first/last card is fully clear. */
@@ -643,7 +727,7 @@
   right: 0;
   z-index: 1;
   pointer-events: none;
-  transition: opacity 0.55s var(--ease-in-out);
+  transition: opacity 0.15s var(--ease-out);
   -webkit-backdrop-filter: blur(5px);
   backdrop-filter: blur(5px);
 }

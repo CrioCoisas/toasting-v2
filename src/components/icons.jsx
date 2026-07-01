@@ -144,6 +144,21 @@ export function ForkSpoonIcon({ size = 24 }) {
   )
 }
 
+// Download (file / download_2) — the carteirinha download button.
+export function DownloadIcon({ size = 16 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path
+        d="M7.99998 2V10M5.17155 7.60951C5.7055 8.83997 6.46393 9.66793 7.60763 10.2531C7.85392 10.3791 8.14604 10.3791 8.39232 10.2531C9.53602 9.66793 10.2945 8.83997 10.8284 7.60951M2.66781 10.6667C2.67588 12.1167 2.74018 12.902 3.25243 13.4142C3.83822 14 4.78103 14 6.66665 14H9.33331C11.2189 14 12.1617 14 12.7475 13.4142C13.2598 12.902 13.3241 12.1167 13.3322 10.6667"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
 // Dish cover / cloche (food / dish_cover) — the active "Casas" tab glyph.
 export function DishCoverIcon({ size = 24 }) {
   return (

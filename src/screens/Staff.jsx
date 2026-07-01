@@ -1,14 +1,26 @@
-import { useEffect, useRef, useState } from 'react'
+import { forwardRef, useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 import { useParams } from 'react-router-dom'
-import { ChevronDownIcon, StarIcon, ForkSpoonIcon, SaleIcon, DishCoverIcon } from '../components/icons'
+import { toPng } from 'html-to-image'
+import { ChevronDownIcon, StarIcon, ForkSpoonIcon, SaleIcon, DishCoverIcon, DownloadIcon } from '../components/icons'
 import { VENUES } from '../data/venues'
 import qrSrc from '../assets/qr.svg'
 import cardMark from '../assets/staff/card-mark.svg'
 import photoMark from '../assets/staff/photo-mark.svg'
+import bgPattern from '../assets/staff/bg-pattern.png'
 import avatarCard from '../assets/staff/avatar-card.png'
 import avatarMini from '../assets/staff/avatar-mini.png'
 import './Staff.css'
+
+const MONTHS_ABBR = ['JAN', 'FEV', 'MAR', 'ABR', 'MAI', 'JUN', 'JUL', 'AGO', 'SET', 'OUT', 'NOV', 'DEZ']
+const pad = (n) => String(n).padStart(2, '0')
+
+// Emission stamp generated at export time: "MMM.YYYY - HH:MM" (abbreviated month).
+function makeStamp(d = new Date()) {
+  return {
+    emissao: `${MONTHS_ABBR[d.getMonth()]}.${d.getFullYear()} - ${pad(d.getHours())}:${pad(d.getMinutes())}`,
+  }
+}
 
 function haptic(pattern) {
   if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate(pattern)
@@ -256,17 +268,126 @@ function CasasList({ onSelect }) {
   )
 }
 
+// The downloadable carteirinha (Figma 206:507): the card on a branded orange
+// background with an extra EMISSÃO column and the emission caption. Rendered
+// off-screen at a fixed size; html-to-image rasterises it to PNG on demand.
+const DownloadCard = forwardRef(function DownloadCard({ stamp }, ref) {
+  // Off-screen wrapper carries the offset; the captured node (.dlcard) stays at
+  // 0,0 so html-to-image renders it inside the frame instead of off-canvas.
+  return (
+    <div className="dlcard-wrap" aria-hidden="true">
+      <div className="dlcard" ref={ref}>
+        <img className="dlcard__bg" src={bgPattern} alt="" />
+        <div className="dlcard__stack">
+        <div className="card">
+          <img className="card__mark" src={cardMark} alt="" style={markStyle(ACCOUNT.id)} />
+          <div className="card__inner">
+            <div className="card__top">
+              <div className="card__photo">
+                <img className="card__photo-img" src={avatarCard} alt="" />
+                <img className="card__photo-mark" src={photoMark} alt="" />
+              </div>
+              <div className="card__id">
+                <div className="card__id-head">
+                  <span className="card__equipe">EQUIPE</span>
+                  <span className="card__status">
+                    <StarIcon size={14} />
+                    {ACCOUNT.status}
+                  </span>
+                </div>
+                <div className="card__id-name">
+                  <p className="card__name">{ACCOUNT.name}</p>
+                  <p className="card__role">
+                    <span>{ACCOUNT.role}</span>
+                    <span className="card__role-sep" />
+                    <span className="card__base">{ACCOUNT.base}</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="card__line" />
+
+            <div className="dlcard__meta">
+              <div className="card__meta-col">
+                <span className="card__meta-label">MATRÍCULA</span>
+                <span className="card__meta-val">{ACCOUNT.matricula}</span>
+              </div>
+              <div className="card__meta-col">
+                <span className="card__meta-label">FUNCIONÁRIO DESDE</span>
+                <span className="card__meta-val">{ACCOUNT.since}</span>
+              </div>
+              <div className="card__meta-col">
+                <span className="card__meta-label">EMISSÃO</span>
+                <span className="card__meta-val dlcard__emissao">{stamp.emissao}</span>
+              </div>
+            </div>
+
+            <div className="card__line" />
+
+            <div className="dlcard__foot">
+              <p className="card__discount-val">{ACCOUNT.discount}</p>
+              <p className="card__discount-sub">EM TODAS CASAS DO GRUPO</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+  )
+})
+
 // Staff home — a segmented control switching between the membership card
 // ("Carteirinha") and the group's houses ("Casas"). The nav stays mounted so
 // the highlight pill and its icon animate; the views crossfade underneath.
 export function StaffHome({ onOpenCasa }) {
   const reduce = useReducedMotion()
   const [tab, setTab] = useState('carteirinha')
+  const [downloading, setDownloading] = useState(false)
+  const dlRef = useRef(null)
+  const stamp = useRef(makeStamp()).current
 
   const TABS = [
     { id: 'carteirinha', label: 'Carteirinha', Icon: SaleIcon },
     { id: 'casas', label: 'Casas', Icon: DishCoverIcon },
   ]
+
+  const handleDownload = async () => {
+    if (downloading) return
+    setDownloading(true)
+    const node = dlRef.current
+    const s = makeStamp() // stamp the moment of export
+    node.querySelector('.dlcard__emissao').textContent = s.emissao
+    // 600×400 frame at 2x → 1200×800 PNG. Transparent canvas keeps the card's
+    // rounded corners (the orange + pattern come from the bg image itself).
+    const opts = { pixelRatio: 2, cacheBust: true, width: 600, height: 400 }
+    try {
+      if (document.fonts?.ready) await document.fonts.ready
+      // Make sure every image (avatar, watermarks) is decoded first.
+      await Promise.all(
+        [...node.querySelectorAll('img')].map((img) =>
+          img.complete
+            ? Promise.resolve()
+            : new Promise((res) => {
+                img.onload = res
+                img.onerror = res
+              })
+        )
+      )
+      // html-to-image's first pass often misses just-decoded images/fonts and
+      // yields a blank frame — warm up once, then capture for real.
+      await toPng(node, opts)
+      const url = await toPng(node, opts)
+      const a = document.createElement('a')
+      a.download = `carteirinha-${ACCOUNT.matricula}.png`
+      a.href = url
+      a.click()
+    } catch (err) {
+      console.error('Falha ao gerar a carteirinha', err)
+    } finally {
+      setDownloading(false)
+    }
+  }
 
   const view = reduce
     ? { initial: { opacity: 0 }, animate: { opacity: 1 }, exit: { opacity: 0 }, transition: { duration: 0 } }
@@ -334,9 +455,20 @@ export function StaffHome({ onOpenCasa }) {
 
                   <div className="card__line" />
 
-                  <div className="card__discount">
-                    <p className="card__discount-val">{ACCOUNT.discount}</p>
-                    <p className="card__discount-sub">EM TODAS CASAS DO GRUPO</p>
+                  <div className="card__foot">
+                    <div className="card__discount">
+                      <p className="card__discount-val">{ACCOUNT.discount}</p>
+                      <p className="card__discount-sub">EM TODAS CASAS DO GRUPO</p>
+                    </div>
+                    <button
+                      type="button"
+                      className="card__download"
+                      onClick={handleDownload}
+                      disabled={downloading}
+                      aria-label="Baixar carteirinha"
+                    >
+                      <DownloadIcon size={16} />
+                    </button>
                   </div>
                 </div>
               </div>
@@ -408,6 +540,8 @@ export function StaffHome({ onOpenCasa }) {
           )
         })}
       </nav>
+
+      <DownloadCard ref={dlRef} stamp={stamp} />
     </motion.main>
   )
 }
