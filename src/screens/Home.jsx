@@ -5,6 +5,7 @@ import { QrIcon } from '../components/icons'
 import VoucherCard from '../components/VoucherCard'
 import { VENUES } from '../data/venues'
 import { pageFade } from '../motion'
+import avatarMini from '../assets/staff/avatar-mini.png'
 import './Home.css'
 
 function haptic(pattern) {
@@ -141,7 +142,7 @@ export default function Home() {
           Gerenciar
           <span>Seus Vales</span>
         </h1>
-        <div className="home__avatar" aria-hidden="true" />
+        <img className="home__avatar" src={avatarMini} alt="" width={48} height={48} />
       </header>
 
       <div
