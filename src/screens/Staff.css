@@ -607,7 +607,7 @@
   right: 0;
   z-index: 2;
   pointer-events: none;
-  transition: opacity 0.25s var(--ease-out);
+  transition: opacity 0.55s var(--ease-in-out);
 }
 
 /* Hidden at the matching scroll extreme so the first/last card is fully clear. */
@@ -643,23 +643,23 @@
   right: 0;
   z-index: 1;
   pointer-events: none;
-  transition: opacity 0.25s var(--ease-out);
+  transition: opacity 0.55s var(--ease-in-out);
   -webkit-backdrop-filter: blur(5px);
   backdrop-filter: blur(5px);
 }
 
 .casas__blur--top {
   top: 0;
-  height: 40px;
-  -webkit-mask-image: linear-gradient(to top, transparent 0%, #000 75%);
-  mask-image: linear-gradient(to top, transparent 0%, #000 75%);
+  height: 48px;
+  -webkit-mask-image: linear-gradient(to top, transparent 0%, #000 100%);
+  mask-image: linear-gradient(to top, transparent 0%, #000 100%);
 }
 
 .casas__blur--bottom {
   bottom: 0;
-  height: 104px;
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 70%);
-  mask-image: linear-gradient(to bottom, transparent 0%, #000 70%);
+  height: 112px;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 100%);
+  mask-image: linear-gradient(to bottom, transparent 0%, #000 100%);
 }
 
 /* Venue card in the group list — tap to open its QR. */
