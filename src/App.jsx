@@ -7,6 +7,7 @@ import Onboard from './screens/Onboard'
 import Home from './screens/Home'
 import VoucherDetail from './screens/VoucherDetail'
 import QrCode from './screens/QrCode'
+import { StaffData, StaffCode, StaffHome, StaffQr } from './screens/Staff'
 
 const isEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim())
 
@@ -20,7 +21,8 @@ const SCREEN_BG = {
   '/email': '#e9e8e2',
   '/home': '#e9e8e2',
 }
-const bgFor = (p) => (p.startsWith('/voucher') ? '#e9e8e2' : SCREEN_BG[p] ?? '#ff5c0a')
+const bgFor = (p) =>
+  p.startsWith('/voucher') || p.startsWith('/staff') ? '#e9e8e2' : SCREEN_BG[p] ?? '#ff5c0a'
 
 export default function App() {
   const location = useLocation()
@@ -56,6 +58,7 @@ export default function App() {
                 onSelectAdmin={() => {
                   /* Admin flow not built yet */
                 }}
+                onSelectStaff={() => navigate('/staff')}
               />
             }
           />
@@ -118,6 +121,10 @@ export default function App() {
               />
             }
           />
+          <Route path="/staff" element={<StaffData onContinue={() => navigate('/staff/code')} />} />
+          <Route path="/staff/code" element={<StaffCode onSubmit={() => navigate('/staff/home')} />} />
+          <Route path="/staff/home" element={<StaffHome onOpenCasa={(id) => navigate(`/staff/qr/${id}`)} />} />
+          <Route path="/staff/qr/:id" element={<StaffQr onDone={() => navigate('/staff/home')} />} />
           <Route path="/home" element={<Home />} />
           <Route path="/voucher/:id" element={<VoucherDetail />} />
           <Route path="/voucher/:id/qr" element={<QrCode />} />

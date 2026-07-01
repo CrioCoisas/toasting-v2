@@ -43,14 +43,8 @@ export default function VoucherDetail() {
     <motion.main className="voucher" {...pageFade} onPointerDown={askMotion}>
       <div className="voucher__body">
         <div className="voucher__ticket">
-          <motion.div
-            className="voucher__float"
-            animate={reduce ? undefined : { y: [0, -8, 0] }}
-            transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
-          >
-            <motion.div className="voucher__tilt" style={{ rotateX, rotateY }}>
-              <VoucherCard venue={venue} />
-            </motion.div>
+          <motion.div className="voucher__tilt" style={{ rotateX, rotateY }}>
+            <VoucherCard venue={venue} />
           </motion.div>
         </div>
 

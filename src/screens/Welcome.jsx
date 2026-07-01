@@ -18,7 +18,7 @@ const PRINT = {
 }
 const PRINT_MS = 2200
 
-export default function Welcome({ onSelectFriend, onSelectAdmin }) {
+export default function Welcome({ onSelectFriend, onSelectAdmin, onSelectStaff }) {
   const reduce = useReducedMotion()
   const [printed, setPrinted] = useState(false)
 
@@ -106,6 +106,14 @@ export default function Welcome({ onSelectFriend, onSelectAdmin }) {
           onClick={onSelectFriend}
         >
           Continuar como Amigo
+        </motion.button>
+        <motion.button
+          type="button"
+          className="role-staff"
+          variants={rise}
+          onClick={onSelectStaff}
+        >
+          Sou funcionário do grupo
         </motion.button>
       </motion.div>
     </motion.div>
